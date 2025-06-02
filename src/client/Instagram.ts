@@ -93,7 +93,7 @@ async function runInstagramForAccount(userId: string, account: IInstagramAccount
         const page = await browser.newPage();
         
         // Set up cookies path for this specific user and account
-        const cookiesDir = path.join('./cookies', userId);
+        const cookiesDir = path.join('./cookies', userId.toString());
         if (!fs.existsSync(cookiesDir)) {
             fs.mkdirSync(cookiesDir, { recursive: true });
         }
