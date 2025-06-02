@@ -45,7 +45,7 @@ async function runInstagramForAllUsers() {
             for (const account of activeAccounts) {
                 try {
                     logger.info(`Processing Instagram account: ${account.username} for user: ${user.username}`);
-                    await runInstagramForAccount(user._id as string, account);
+                    await runInstagramForAccount(user._id.toString(), account);
                 } catch (error) {
                     logger.error(`Error processing account ${account.username} for user ${user.username}:`, error);
                 }
