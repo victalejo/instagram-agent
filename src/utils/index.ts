@@ -4,9 +4,8 @@ import { geminiApiKeys } from "../secret";
 import logger from "../config/logger";
 
 
-export async function Instagram_cookiesExist(): Promise<boolean> {
+export async function cookiesExist(cookiesPath: string): Promise<boolean> {
     try {
-        const cookiesPath = "./cookies/Instagramcookies.json";
         await fs.access(cookiesPath); // Check if file exists
 
         const cookiesData = await fs.readFile(cookiesPath, "utf-8");
@@ -32,7 +31,7 @@ export async function Instagram_cookiesExist(): Promise<boolean> {
     } catch (error) {
         const err = error as NodeJS.ErrnoException;
         if (err.code === 'ENOENT') {
-            logger.warn("Cookies file does not exist.");
+            logger.warn(`Cookies file does not exist: ${cookiesPath}`);
             return false;
         } else {
             logger.error("Error checking cookies:", error);

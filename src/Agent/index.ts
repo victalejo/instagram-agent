@@ -58,16 +58,13 @@ export function chooseCharacter(): any {
     if (jsonFiles.length === 0) {
         throw new Error("No character JSON files found");
     }
-    console.log("Select a character:");
-    jsonFiles.forEach((file, index) => {
-        console.log(`${index + 1}: ${file}`);
-    });
-    const answer = readlineSync.question("Enter the number of your choice: ");
-    const selection = parseInt(answer);
-    if (isNaN(selection) || selection < 1 || selection > jsonFiles.length) {
-        throw new Error("Invalid selection");
-    }
-    const chosenFile = path.join(charactersDir, jsonFiles[selection - 1]);
+    
+    // Automatically select the first character (sample.character.json is a good default)
+    const preferredCharacter = jsonFiles.find(file => file.includes("sample")) || jsonFiles[0];
+    const chosenFile = path.join(charactersDir, preferredCharacter);
+    
+    logger.info(`Auto-selected character: ${preferredCharacter}`);
+    
     const data = fs.readFileSync(chosenFile, "utf8");
     const characterConfig = JSON.parse(data);
     return characterConfig;
@@ -76,10 +73,10 @@ export function chooseCharacter(): any {
 export function initAgent(): any {
     try {
         const character = chooseCharacter();
-        console.log("Character selected:", character);
+        logger.info("Character selected successfully");
         return character;
     } catch (error) {
-        console.error("Error selecting character:", error);
+        logger.error("Error selecting character:", error);
         process.exit(1);
     }
 }
