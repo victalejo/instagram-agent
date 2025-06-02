@@ -6,6 +6,7 @@ import UserAgent from "user-agents";
 import { Server } from "proxy-chain";
 import { User, IInstagramAccount } from "../models/User";
 import { TrainingData } from "../models/TrainingData";
+import mongoose from 'mongoose';
 import logger from "../config/logger";
 import { loadCookies, saveCookies } from "../utils";
 import { runAgent } from "../Agent";
@@ -45,7 +46,7 @@ async function runInstagramForAllUsers() {
             for (const account of activeAccounts) {
                 try {
                     logger.info(`Processing Instagram account: ${account.username} for user: ${user.username}`);
-                    await runInstagramForAccount(user._id.toString(), account);
+                    await runInstagramForAccount(user._id?.toString() || '', account);
                 } catch (error) {
                     logger.error(`Error processing account ${account.username} for user ${user.username}:`, error);
                 }
@@ -142,7 +143,7 @@ async function runInstagramForAccount(userId: string, account: IInstagramAccount
         // Update last active time
         await User.updateOne(
             { 
-                _id: userId,
+                _id: new mongoose.Types.ObjectId(userId),
                 'instagramAccounts.username': account.username 
             },
             { 
