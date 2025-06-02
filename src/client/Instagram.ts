@@ -46,7 +46,7 @@ async function runInstagramForAllUsers() {
             for (const account of activeAccounts) {
                 try {
                     logger.info(`Processing Instagram account: ${account.username} for user: ${user.username}`);
-                    await runInstagramForAccount(user._id?.toString() || '', account);
+                    await runInstagramForAccount(String(user._id), account);
                 } catch (error) {
                     logger.error(`Error processing account ${account.username} for user ${user.username}:`, error);
                 }
@@ -62,6 +62,9 @@ async function runInstagramForAccount(userId: string, account: IInstagramAccount
     let browser: Browser | null = null;
 
     try {
+        // Ensure userId is string
+        const userIdString = String(userId);
+        
         const serverPort = 8000 + Math.floor(Math.random() * 1000); // Use different ports for different accounts
         server = new Server({ port: serverPort });
         await server.listen();
@@ -93,7 +96,7 @@ async function runInstagramForAccount(userId: string, account: IInstagramAccount
         const page = await browser.newPage();
         
         // Set up cookies path for this specific user and account
-        const cookiesDir = path.join('./cookies', userId.toString());
+        const cookiesDir = path.join('./cookies', userIdString);
         if (!fs.existsSync(cookiesDir)) {
             fs.mkdirSync(cookiesDir, { recursive: true });
         }
@@ -133,7 +136,7 @@ async function runInstagramForAccount(userId: string, account: IInstagramAccount
 
         // Get user-specific training data for personalized comments
         const trainingData = await TrainingData.find({
-            userId,
+            userId: userIdString,
             instagramUsername: account.username
         }).limit(10); // Limit to recent training data for context
 
@@ -143,7 +146,7 @@ async function runInstagramForAccount(userId: string, account: IInstagramAccount
         // Update last active time
         await User.updateOne(
             { 
-                _id: new mongoose.Types.ObjectId(userId),
+                _id: new mongoose.Types.ObjectId(userIdString),
                 'instagramAccounts.username': account.username 
             },
             { 
