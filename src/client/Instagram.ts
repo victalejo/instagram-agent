@@ -46,7 +46,7 @@ async function runInstagramForAllUsers() {
             for (const account of activeAccounts) {
                 try {
                     logger.info(`Processing Instagram account: ${account.username} for user: ${user.username}`);
-                    await runInstagramForAccount(String(user._id), account);
+                    await runInstagramForAccount((user._id as mongoose.Types.ObjectId).toString(), account);
                 } catch (error) {
                     logger.error(`Error processing account ${account.username} for user ${user.username}:`, error);
                 }
@@ -62,8 +62,8 @@ async function runInstagramForAccount(userId: string, account: IInstagramAccount
     let browser: Browser | null = null;
 
     try {
-        // Ensure userId is string
-        const userIdString = String(userId);
+        // userId is already a string, no need to convert
+        const userIdString = userId;
         
         const serverPort = 8000 + Math.floor(Math.random() * 1000); // Use different ports for different accounts
         server = new Server({ port: serverPort });
