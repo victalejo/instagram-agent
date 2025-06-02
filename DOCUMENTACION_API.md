@@ -30,6 +30,21 @@ GEMINI_API_KEY_1=tu_clave_api_gemini
 
 ### Instalación y Ejecución
 
+#### 🐳 Opción 1: Docker (Recomendado)
+
+```bash
+# Clonar y navegar al directorio
+cd instagram-agent
+
+# Ejecutar con Docker Compose
+docker-compose up -d
+
+# Verificar que funciona
+curl http://localhost:3000/api/health
+```
+
+#### 📦 Opción 2: Instalación Local
+
 ```bash
 # Instalar dependencias
 npm install
@@ -41,6 +56,8 @@ cp .env.example .env
 # Iniciar el servidor
 npm start
 ```
+
+> **💡 Nota:** Docker resuelve automáticamente todos los problemas de dependencias de Puppeteer y Chrome. Es la opción más confiable para producción.
 
 ## 📋 Endpoints de la API
 
@@ -495,6 +512,45 @@ const api = new InstagramAgentAPI();
 await api.register('usuario', 'email@ejemplo.com', 'password');
 await api.addInstagramAccount('mi_instagram', 'password_ig');
 ```
+
+## 🐳 Uso con Docker
+
+### Comandos Básicos
+
+```bash
+# Construir y ejecutar
+docker-compose up -d
+
+# Ver logs en tiempo real
+docker-compose logs -f instagram-agent
+
+# Parar el servicio
+docker-compose down
+
+# Reiniciar
+docker-compose restart instagram-agent
+
+# Acceder al contenedor
+docker-compose exec instagram-agent /bin/bash
+```
+
+### Resolución de Problemas con Docker
+
+**Problema:** Error de dependencias de Puppeteer/Chrome
+```
+GLIBC_2.36 not found
+```
+
+**Solución:** ✅ Automáticamente resuelto con Docker. El contenedor incluye todas las dependencias necesarias.
+
+**Problema:** Puerto en uso
+```bash
+# Cambiar puerto en docker-compose.yml
+ports:
+  - "3001:3000"  # Usar puerto 3001
+```
+
+Para más detalles sobre Docker, consulta: `DOCKER_GUIA.md`
 
 ## 🔧 Migración desde Sistema Monousuario
 

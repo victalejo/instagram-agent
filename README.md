@@ -1,145 +1,308 @@
-## Instagram-AI-Agent 🌸
+# 📱 Instagram AI Agent - Sistema Multi-Usuario
 
-Instagram-AI-Agent is an AI-powered automation tool designed for **Instagram** to automate social media interactions such as posting, liking, and commenting. It leverages advanced AI models to generate engaging content, automate interactions, and manage Instagram accounts efficiently.
+Un agente de IA avanzado para automatizar Instagram de forma inteligente, ahora con soporte para **múltiples usuarios** y **entrenamientos personalizados**.
 
-Before using the automation features, you can personalize the agent by training with the following, including:
-https://www.instagram.com/dreamlandofficial_1?igsh=NTZvcHRkNjlhYzhp
-- **YouTube Video URL** 🎥
-- **Audio File** 🎙️
-- **Portfolio or Website Link** 🌐
-- **File Formats Supported**: PDF, DOC, DOCX, TXT 📄
+## ✨ Características Principales
 
-## Features
+- 🧠 **IA Personalizada**: Comentarios generados con IA basados en entrenamiento personalizado
+- 👥 **Multi-Usuario**: Soporte completo para múltiples usuarios y cuentas
+- 🔐 **Autenticación Segura**: Sistema JWT con registro e inicio de sesión
+- 📱 **Múltiples Cuentas**: Cada usuario puede conectar varias cuentas de Instagram
+- 🎓 **Entrenamiento Personalizado**: Entrena la IA con tu contenido específico
+- 🐳 **Docker Ready**: Configuración completa para Docker (resuelve problemas de dependencias)
+- 🔄 **Automatización Inteligente**: Likes y comentarios automáticos
+- 📊 **API RESTful**: API completa para integración frontend
 
-- **Instagram Automation**: Automatically log in, post photos, like posts, and leave thoughtful comments.
-- **AI-Powered Content Generation**: Use Google Generative AI to create engaging captions and comments.
-- **Proxy Support**: Use proxies to manage multiple accounts and avoid rate limits.
-- **Cookie Management**: Save and load cookies to maintain sessions across restarts.
+## 🚀 Instalación Rápida
 
-**Upcoming Features:**
+### 🐳 Opción 1: Docker (Recomendado)
 
-- **Twitter Automation**: (Coming soon) Automatically tweet, retweet, and like tweets.
-- **GitHub Automation**: (Coming soon) Automatically manage repositories, issues, and pull requests.
+```bash
+# Clonar el repositorio
+git clone <tu-repo>
+cd instagram-agent
 
-## Installation
+# Ejecutar con Docker
+docker-compose up -d
 
-1. **Clone the repository**:
+# Verificar funcionamiento
+curl http://localhost:3000/api/health
+```
 
-   ```sh
-   git clone https://github.com/david-patrick-chuks/Instagram-AI-Agent.git
-   cd Instagram-AI-Agent
-   ```
+### 📦 Opción 2: Instalación Local
 
-2. **Install dependencies**:
+```bash
+# Instalar dependencias
+npm install
 
-   ```sh
-   npm install
-   ```
+# Configurar variables de entorno
+cp .env.example .env
+# Editar .env con tus configuraciones
 
-3. **Set up environment variables**:
-   Rename the [.env.example](http://_vscodecontentref_/1) file to [.env](http://_vscodecontentref_/1) in the root directory and add your Instagram credentials. Refer to the [.env.example](http://_vscodecontentref_/2) file for the required variables.
-   ```dotenv # Instagram credentials
-   IGusername=your_instagram_username
-   IGpassword=your_instagram_password 
-   
-   Xusername= #Twitter username
-   Xpassword= #Twitter password
+# Iniciar servidor
+npm start
+```
 
-   MONGODB_URI= #MongoDB URI
-   ```
+## 🔧 Configuración
 
-## MongoDB Setup (Using Docker)
+### Variables de Entorno Requeridas
 
-1. **Install Docker**:
-   If you don't have Docker installed, download and install it from the [official website](https://www.docker.com/products/docker-desktop/)
-2. **Run MongoDB using Docker Container**:
+```bash
+# MongoDB (OBLIGATORIO)
+MONGODB_URI=tu_mongodb_uri
 
-    **Option 1:**
-      ```sh
-      docker run -d -p 27017:27017 --name instagram-ai-mongodb mongodb/mongodb-community-server:latest
-      ```
-    **Option 2:**
-      ```sh
-      docker run -d -p 27017:27017 --name instagram-ai-mongodb -v mongodb_data:/data/db mongodb/mongodb-community-server:latest
-      ```   
-      (Option 2: use this if you want to have like a permanent storage in you so your data won't be lost or remove if you stop or remove your Docker container)
-3. **Modify the MONGODB_URI in the .env file**:
-   ```dotenv
-   MONGODB_URI=mongodb://localhost:27017/instagram-ai-agent
-   ```
-4. **Verify the connection**:
-   Open a new terminal and run the following command:
-   ```sh
-   docker ps
-   ```
-   You should see the MongoDB container running.
+# JWT Secret (OBLIGATORIO)
+JWT_SECRET=tu_jwt_secret_super_seguro
 
-   Docker Commands (Additional Info):
-   - To stop the MongoDB container:
-     ```sh
-     docker stop instagram-ai-mongodb
-     ```
-   - To start the MongoDB container:
-       ```sh
-       docker start instagram-ai-mongodb
-       ```
-   - To remove the MongoDB container:
-      ```sh
-      docker rm instagram-ai-mongodb
-      ```
-   - To remove the MongoDB container and its data:
-      ```sh
-      docker rm -v instagram-ai-mongodb
-      ```
+# Puerto del servidor
+PORT=3000
 
-## Usage
+# Claves API de Gemini (mínimo una)
+GEMINI_API_KEY_1=tu_clave_api_gemini
+```
 
-1. **Run the Instagram agent**:
-   ```sh
-   npm start
-   ```
+## 📋 Uso de la API
 
-**Upcoming Features:**
+### 1. Registrar Usuario
 
-- **Run the Twitter agent** (Coming soon):
+```bash
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "mi_usuario",
+    "email": "mi@email.com",
+    "password": "mi_contraseña"
+  }'
+```
 
-  ```sh
-  npm run start:twitter
-  ```
+### 2. Agregar Cuenta de Instagram
 
-- **Run the GitHub agent** (Coming soon):
-  ```sh
-  npm run start:github
-  ```
+```bash
+curl -X POST http://localhost:3000/api/instagram/accounts \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer TU_TOKEN" \
+  -d '{
+    "username": "mi_cuenta_instagram",
+    "password": "mi_contraseña_instagram"
+  }'
+```
 
-## Project Structure
+### 3. Entrenar la IA
 
-- **src/client**: Contains the main logic for interacting with social media platforms like Instagram.
-- **src/config**: Configuration files, including the logger setup.
-- **src/utils**: Utility functions for handling errors, cookies, data saving, etc.
-- **src/Agent**: Contains the AI agent logic and training scripts.
-- **src/Agent/training**: Training scripts for the AI agent.
-- **src/schema**: Schema definitions for AI-generated content and database models.
-- **src/test**: Contains test data and scripts, such as example tweets.
+```bash
+curl -X POST http://localhost:3000/api/training/data \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer TU_TOKEN" \
+  -d '{
+    "instagramUsername": "mi_cuenta_instagram",
+    "dataType": "text",
+    "content": "Mi personalidad y estilo de comentarios..."
+  }'
+```
 
-## Logging
+## 🎓 Tipos de Entrenamiento Soportados
 
-The project uses a custom logger to log information, warnings, and errors. Logs are saved in the [logs](http://_vscodecontentref_/3) directory.
+- 📝 **Texto**: Contenido directo para entrenar la personalidad
+- 🎥 **YouTube URLs**: Transcripciones automáticas de videos
+- 🎙️ **Audio**: Archivos MP3, WAV con transcripción
+- 🌐 **Websites**: Scraping automático de contenido web
+- 📄 **Documentos**: PDF, DOC, DOCX, TXT
 
-## Error Handling
+## 🤖 Funcionamiento del Agente
 
-Process-level error handlers are set up to catch unhandled promise rejections, uncaught exceptions, and process warnings. Errors are logged using the custom logger.
+1. **Procesamiento Automático**: Ejecuta cada 30 segundos para todas las cuentas activas
+2. **Comentarios Inteligentes**: Genera comentarios personalizados usando IA
+3. **Gestión de Sesiones**: Mantiene cookies separadas por usuario
+4. **Interacciones Naturales**: Likes y comentarios que respetan las políticas de Instagram
 
-## Contributing
+## 🐳 Docker
 
-Contributions are welcome! Please fork the repository and submit a pull request with your changes.
+### Comandos Útiles
 
-## License
+```bash
+# Construir y ejecutar
+docker-compose up -d
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+# Ver logs
+docker-compose logs -f instagram-agent
 
-## Acknowledgements
+# Reiniciar
+docker-compose restart instagram-agent
 
-- [Google Generative AI](https://ai.google/tools/) for providing the AI models.
-- [Puppeteer](https://github.com/puppeteer/puppeteer) for browser automation.
-- [puppeteer-extra](https://github.com/berstend/puppeteer-extra) for additional plugins and enhancements.
+# Parar
+docker-compose down
+
+# Acceder al contenedor
+docker-compose exec instagram-agent /bin/bash
+```
+
+### Ventajas de Docker
+
+- ✅ Resuelve problemas de dependencias de Puppeteer/Chrome
+- ✅ Entorno consistente en cualquier sistema
+- ✅ Fácil escalabilidad y despliegue
+- ✅ Aislamiento de procesos
+
+## 📊 Endpoints Principales
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | `/api/auth/register` | Registrar usuario |
+| POST | `/api/auth/login` | Iniciar sesión |
+| POST | `/api/instagram/accounts` | Agregar cuenta IG |
+| GET | `/api/instagram/accounts` | Listar cuentas IG |
+| POST | `/api/training/data` | Agregar entrenamiento |
+| GET | `/api/training/data` | Obtener entrenamientos |
+| GET | `/api/health` | Estado del sistema |
+
+## 📚 Documentación
+
+- 📖 **API Completa**: Ver `DOCUMENTACION_API.md`
+- 🐳 **Guía Docker**: Ver `DOCKER_GUIA.md`
+- 🔧 **Guía Técnica**: Ver `MULTI_USER_GUIDE.md`
+
+## 🔒 Seguridad
+
+- 🔐 Autenticación JWT segura
+- 🛡️ Passwords hasheados con bcrypt
+- 🔒 Datos de usuario completamente aislados
+- 🚫 Validación de entrada en todos los endpoints
+
+## 🚀 Despliegue en Producción
+
+### Con Docker
+
+```bash
+# Producción con docker-compose
+docker-compose -f docker-compose.yml up -d
+
+# Ver logs
+docker-compose logs -f instagram-agent
+
+# Monitoreo
+docker stats instagram-agent-app
+```
+
+### Variables de Entorno de Producción
+
+```bash
+NODE_ENV=production
+MONGODB_URI=tu_mongodb_produccion
+JWT_SECRET=clave_super_segura_produccion
+```
+
+## 🛠️ Desarrollo
+
+### Estructura del Proyecto
+
+```
+├── src/
+│   ├── models/          # Modelos de datos (User, TrainingData)
+│   ├── routes/          # Endpoints de la API
+│   ├── middleware/      # Autenticación JWT
+│   ├── client/          # Cliente Instagram multi-usuario
+│   ├── services/        # Servicios de entrenamiento
+│   └── Agent/           # Motor de IA
+├── scripts/             # Scripts de despliegue
+├── Dockerfile           # Configuración Docker
+├── docker-compose.yml   # Orquestación de servicios
+└── docs/               # Documentación completa
+```
+
+### Comandos de Desarrollo
+
+```bash
+# Desarrollo local
+npm run dev
+
+# Build
+npm run build
+
+# Tests
+npm test
+
+# Linting
+npm run lint
+```
+
+## 🔧 Migración desde Versión Anterior
+
+Si tienes la versión anterior (mono-usuario):
+
+1. **Ejecuta el nuevo sistema**
+2. **Registra tu usuario** usando `/api/auth/register`
+3. **Agrega tus cuentas IG** usando `/api/instagram/accounts`
+4. **Re-importa entrenamientos** usando `/api/training/data`
+
+## 🆘 Resolución de Problemas
+
+### Error: Dependencias de Puppeteer
+
+```
+GLIBC_2.36 not found
+```
+
+**Solución**: ✅ Usar Docker - resuelve automáticamente
+
+### Error: MongoDB conexión
+
+```
+MongoDB connection error
+```
+
+**Solución**: Verificar URL en `.env` o `docker-compose.yml`
+
+### Error: Puerto en uso
+
+```
+Port 3000 already in use
+```
+
+**Solución**: Cambiar puerto en `docker-compose.yml`
+
+## 📈 Roadmap
+
+- [ ] 🎨 Dashboard web frontend
+- [ ] 📊 Métricas y analytics
+- [ ] 🔄 Webhooks para notificaciones
+- [ ] 📱 Soporte para más plataformas sociales
+- [ ] 🤖 Mejoras en IA conversacional
+- [ ] 📋 Plantillas de comentarios
+
+## 🤝 Contribuir
+
+1. Fork el proyecto
+2. Crea una rama para tu feature
+3. Commit tus cambios
+4. Push a la rama
+5. Crea un Pull Request
+
+## 📄 Licencia
+
+Este proyecto está bajo la licencia MIT.
+
+## 💬 Soporte
+
+- 📧 Para soporte técnico, crea un issue
+- 📚 Consulta la documentación en `/docs`
+- 🐳 Para problemas con Docker, ver `DOCKER_GUIA.md`
+
+---
+
+## 🎉 ¡Disfruta automatizando Instagram de forma inteligente!
+
+**El sistema está completamente listo para producción con Docker.** 🚀
+
+### Demo Rápido
+
+```bash
+# 1. Ejecutar sistema
+docker-compose up -d
+
+# 2. Registrar usuario
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"username":"demo","email":"demo@test.com","password":"demo123"}'
+
+# 3. ¡Listo para usar!
+```

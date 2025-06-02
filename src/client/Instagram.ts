@@ -66,9 +66,27 @@ async function runInstagramForAccount(userId: string, account: IInstagramAccount
         await server.listen();
         const proxyUrl = `http://localhost:${serverPort}`;
         
+        // Configure Puppeteer for Docker environment
+        const puppeteerArgs = [
+            `--proxy-server=${proxyUrl}`,
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-zygote',
+            '--disable-gpu',
+            '--disable-background-timer-throttling',
+            '--disable-backgrounding-occluded-windows',
+            '--disable-renderer-backgrounding',
+            '--disable-features=TranslateUI',
+            '--disable-ipc-flooding-protection'
+        ];
+
         browser = await puppeteer.launch({
-            headless: true, // Set to true for production
-            args: [`--proxy-server=${proxyUrl}`, '--no-sandbox', '--disable-setuid-sandbox'],
+            headless: true,
+            args: puppeteerArgs,
+            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
         });
 
         const page = await browser.newPage();

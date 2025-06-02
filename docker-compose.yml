@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  instagram-agent:
+    build: .
+    container_name: instagram-agent-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongo:9c5769956e2edf84959b@server.iaportafolio.com:4500/?tls=false
+      - JWT_SECRET=instagram-agent-multi-user-jwt-secret-key-2025-super-secure-random-string
+      - PORT=3000
+      # Add your Gemini API keys here
+      - GEMINI_API_KEY_1=${GEMINI_API_KEY_1:-AIzaSyBwOdDKvtandLwzPhtGS_nqFYzkWY0_RQE}
+      - GEMINI_API_KEY_2=${GEMINI_API_KEY_2:-AIzaSyA35Q0b3PkCw_EssBhlBqFAE7rH7aZChp8}
+      - GEMINI_API_KEY_3=${GEMINI_API_KEY_3:-AIzaSyAJLEzc0a5VjjemC9a5L3bJMHl8jpbArWI}
+    volumes:
+      - ./cookies:/app/cookies
+      - ./logs:/app/logs
+    networks:
+      - instagram-agent-network
+    # Security options for running Chrome in container
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - seccomp:unconfined
+    # Alternative without SYS_ADMIN (more secure but may have issues)
+    # shm_size: 2gb
+
+  # Optional: Add a database if you want to run MongoDB locally
+  # mongodb:
+  #   image: mongo:6.0
+  #   container_name: instagram-agent-mongo
+  #   restart: unless-stopped
+  #   ports:
+  #     - "27017:27017"
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: admin
+  #     MONGO_INITDB_ROOT_PASSWORD: password
+  #   volumes:
+  #     - mongodb_data:/data/db
+  #   networks:
+  #     - instagram-agent-network
+
+networks:
+  instagram-agent-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:

@@ -1,0 +1,37 @@
+node_modules
+npm-debug.log
+.npm
+.env
+.git
+.gitignore
+README.md
+MULTI_USER_GUIDE.md
+DOCUMENTACION_API.md
+Dockerfile
+.dockerignore
+coverage
+.nyc_output
+build
+dist
+logs
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp
+temp

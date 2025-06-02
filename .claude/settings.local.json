@@ -9,7 +9,9 @@
       "Bash(npx tsc:*)",
       "Bash(grep:*)",
       "Bash(find:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(chmod:*)",
+      "Bash(docker:*)"
     ],
     "deny": []
   }
