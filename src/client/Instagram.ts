@@ -47,7 +47,7 @@ async function runInstagramForAllUsers() {
                 try {
                     logger.info(`Processing Instagram account: ${account.username} for user: ${user.username}`);
                     
-                    // ✅ CORRECCIÓN: Asegurar conversión correcta de ObjectId a string
+                    // ✅ CORRECCIÓN: Convertir ObjectId a string correctamente
                     const userIdString = (user._id as mongoose.Types.ObjectId).toString();
                     
                     await runInstagramForAccount(userIdString, account);
@@ -61,13 +61,13 @@ async function runInstagramForAllUsers() {
     }
 }
 
-async function runInstagramForAccount(userId: string | mongoose.Types.ObjectId, account: IInstagramAccount) {
+async function runInstagramForAccount(userId: string, account: IInstagramAccount) {
     let server: Server | null = null;
     let browser: Browser | null = null;
 
     try {
-        // ✅ CORRECCIÓN: Validar que userId sea string y no ObjectId
-        const userIdString = typeof userId === 'string' ? userId : (userId as mongoose.Types.ObjectId).toString();
+        // ✅ CORRECCIÓN: Asegurar que userId siempre sea string
+        const userIdString = userId;
         
         const serverPort = 8000 + Math.floor(Math.random() * 1000); // Use different ports for different accounts
         server = new Server({ port: serverPort });
@@ -139,8 +139,9 @@ async function runInstagramForAccount(userId: string | mongoose.Types.ObjectId, 
         await page.goto("https://www.instagram.com/");
 
         // Get user-specific training data for personalized comments
+        // ✅ CORRECCIÓN: Usar userIdString para consulta de base de datos
         const trainingData = await TrainingData.find({
-            userId: userIdString, // ✅ Usar userIdString validado
+            userId: userIdString,
             instagramUsername: account.username
         }).limit(10); // Limit to recent training data for context
 
@@ -148,9 +149,10 @@ async function runInstagramForAccount(userId: string | mongoose.Types.ObjectId, 
         await interactWithPosts(page, account.username, trainingData, 5); // Limit to 5 posts per iteration
 
         // Update last active time
+        // ✅ CORRECCIÓN: Convertir string a ObjectId para actualización
         await User.updateOne(
             { 
-                _id: new mongoose.Types.ObjectId(userIdString), // ✅ Convertir explícitamente
+                _id: new mongoose.Types.ObjectId(userIdString),
                 'instagramAccounts.username': account.username 
             },
             { 
