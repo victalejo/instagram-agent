@@ -46,7 +46,11 @@ async function runInstagramForAllUsers() {
             for (const account of activeAccounts) {
                 try {
                     logger.info(`Processing Instagram account: ${account.username} for user: ${user.username}`);
-                    await runInstagramForAccount((user._id as mongoose.Types.ObjectId).toString(), account);
+                    
+                    // ✅ CORRECCIÓN: Asegurar conversión correcta de ObjectId a string
+                    const userIdString = (user._id as mongoose.Types.ObjectId).toString();
+                    
+                    await runInstagramForAccount(userIdString, account);
                 } catch (error) {
                     logger.error(`Error processing account ${account.username} for user ${user.username}:`, error);
                 }
@@ -57,13 +61,13 @@ async function runInstagramForAllUsers() {
     }
 }
 
-async function runInstagramForAccount(userId: string, account: IInstagramAccount) {
+async function runInstagramForAccount(userId: string | mongoose.Types.ObjectId, account: IInstagramAccount) {
     let server: Server | null = null;
     let browser: Browser | null = null;
 
     try {
-        // userId is already a string, no need to convert
-        const userIdString = userId;
+        // ✅ CORRECCIÓN: Validar que userId sea string y no ObjectId
+        const userIdString = typeof userId === 'string' ? userId : (userId as mongoose.Types.ObjectId).toString();
         
         const serverPort = 8000 + Math.floor(Math.random() * 1000); // Use different ports for different accounts
         server = new Server({ port: serverPort });
@@ -95,7 +99,7 @@ async function runInstagramForAccount(userId: string, account: IInstagramAccount
 
         const page = await browser.newPage();
         
-        // Set up cookies path for this specific user and account
+        // ✅ CORRECCIÓN: Usar userIdString validado
         const cookiesDir = path.join('./cookies', userIdString);
         if (!fs.existsSync(cookiesDir)) {
             fs.mkdirSync(cookiesDir, { recursive: true });
@@ -136,7 +140,7 @@ async function runInstagramForAccount(userId: string, account: IInstagramAccount
 
         // Get user-specific training data for personalized comments
         const trainingData = await TrainingData.find({
-            userId: userIdString,
+            userId: userIdString, // ✅ Usar userIdString validado
             instagramUsername: account.username
         }).limit(10); // Limit to recent training data for context
 
@@ -146,7 +150,7 @@ async function runInstagramForAccount(userId: string, account: IInstagramAccount
         // Update last active time
         await User.updateOne(
             { 
-                _id: new mongoose.Types.ObjectId(userIdString),
+                _id: new mongoose.Types.ObjectId(userIdString), // ✅ Convertir explícitamente
                 'instagramAccounts.username': account.username 
             },
             { 
